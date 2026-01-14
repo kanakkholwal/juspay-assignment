@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { PiArrowDownRight, PiArrowUpRight } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { Area, AreaChart, Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Icon } from "../components/icons";
 import { CircularChartIcon, WorldMapAltIcon } from "../components/icons.svg";
 import {
 	ChartContainer,
@@ -10,7 +10,6 @@ import {
 } from "../components/ui/chart";
 import { cn } from "../lib/utils";
 import { getDashboardData } from "../store/dashboardSlice";
-
 
 const revenueConfig = {
 	current: { label: "Current Week", color: "#1C1C1C" },
@@ -74,7 +73,7 @@ export default function Dashboard() {
 				</div>
 
 				<div className="bg-card p-6 rounded-2xl flex flex-col justify-between border border-border/50">
-					<h3 className="font-semibold text-sm mb-6">Projections vs Actuals</h3>
+					<h3 className="font-semibold text-sm mb-6">Projections vs Actual</h3>
 					<div className="h-48 w-full mt-auto">
 						<ChartContainer config={projectionConfig} className="h-full w-full">
 							<BarChart data={projectionData} barSize={28}>
@@ -161,7 +160,7 @@ export default function Dashboard() {
 				<div className="@3xl:col-span-7 bg-card p-6 rounded-2xl border border-border/50">
 					<h3 className="font-semibold text-sm mb-6">Top Selling Products</h3>
 					<div className="overflow-x-auto">
-						<table className="w-full text-sm text-left min-w-[500px]">
+						<table className="w-full text-sm text-left min-w-125">
 							<thead>
 								<tr className="text-xs text-muted-foreground border-b border-border/50">
 									<th className="pb-3 font-normal">Name</th>
@@ -222,7 +221,7 @@ const StatCard = ({ title, value, change, isPositive, className }) => (
 			<div className="flex items-center gap-1 text-xs font-medium">
 				<span className={isPositive ? "text-emerald-500" : "text-red-500"}>
 					{change}
-					{isPositive ? <PiArrowUpRight className="inline" /> : <PiArrowDownRight className="inline" />}
+					{isPositive ? <Icon name="arrow-up-right" className="inline-block" /> : <Icon name="arrow-down-right" className="inline-block" />}
 				</span>
 			</div>
 		</div>

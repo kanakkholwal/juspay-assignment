@@ -1,29 +1,12 @@
-# Juspay eCommerce Dashboard
+# Juspay - ByeWind Dashboard
+
+[**View Live Demo**](https://juspay-assignment-kanak.netlify.app)
 
 A premium, responsive eCommerce dashboard built with **React 19**, **Vite**, and **Tailwind CSS v4**. This project features a comprehensive dashboard with data visualizations and a robust order management system.
 
-## 🚀 Features
+## Tech Stack
 
-- **Interactive Dashboard**: 
-  - Real-time stats with trend indicators.
-  - Revenue analysis using Area Charts.
-  - Projections vs Actuals Bar Charts.
-  - Sales distribution and geographical revenue tracking.
-- **Advanced Order Management**:
-  - Data table powered by **TanStack Table**.
-  - Global search, sorting, and pagination.
-  - Status tracking with color-coded indicators.
-  - Row selection and action menus.
-- **Premium UI/UX**:
-  - **Dark Mode** support with `next-themes`.
-  - Smooth animations using **Framer Motion**.
-  - Responsive design with **Tailwind CSS** and **Container Queries**.
-  - Skeleton loaders for improved perceived performance.
-- **State Management**: Centralized state using **Redux Toolkit**.
-
-## 🛠️ Tech Stack
-
-- **Framework**: [React 19](https://react.dev/)
+- **Framework**: [React 19](https://react.dev/) & [React Router](https://reactrouter.com/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
@@ -43,52 +26,80 @@ A premium, responsive eCommerce dashboard built with **React 19**, **Vite**, and
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kanakkholwal/juspay-assignment.git
    cd juspay-assignment
    ```
 
 2. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
 3. **Start the development server**:
+
    ```bash
    pnpm dev
    ```
 
 4. **Build for production**:
+
    ```bash
    pnpm build
    ```
+## 📸 Screenshots
 
-## 🧠 Design Decisions & Architecture
+| Dashboard Light Mode | Dashboard Dark Mode |
+|:---:|:---:|
+| <img src="./screenshots/dashboard_light.png" alt="Dashboard Light" width="600"/> | <img src="./screenshots/dashboard_dark.png" alt="Dashboard Dark" width="600"/> |
 
-### 1. State Management Strategy
-I chose **Redux Toolkit** to handle the application's state. While React's built-in `useState` and `useContext` are sufficient for small apps, Redux provides a more predictable state container for complex dashboards where multiple components (Sidebar, Navbar, Dashboard, OrderList) need to share and react to the same data.
+| Orders Light Mode | Orders Dark Mode |
+|:---:|:---:|
+| <img src="./screenshots/orders_light.png" alt="Orders Light" width="600"/> | <img src="./screenshots/orders_dark.png" alt="Orders Dark" width="600"/> |
+
+## Design Decisions & Architecture
+
+### 1. State Management
+
+I chose **Redux Toolkit** to handle the application's state like data fetched through APIs and shared across multiple components and application states like filters/pagination or sidebar open/close states.
+
+While React's built-in `useState` and `useContext` are sufficient for small apps, Redux provides a more predictable state container for complex dashboards where multiple components (Sidebar, Navbar, Dashboard, OrderList) need to share and react to the same data.
+
+It also simplifies api data fetching states using `createAsyncThunk` to manage loading, success, and error states in a standardized way.
 
 ### 2. Component-Level Responsiveness
-Instead of relying solely on viewport-based media queries, I implemented **Tailwind Container Queries** (`@container`). This allows components like the `StatCard` or `RevenueChart` to adapt their layout based on the size of their parent container, making them truly modular and reusable in different layout contexts.
+
+Instead of relying solely on viewport-based media queries, I implemented **Tailwind Container Queries** (`@container`).
+
+This allows components like the `StatCard` or `RevenueChart` to adapt their layout based on the size of their parent container (`Dashboard` component), making them truly modular and reusable in different layout contexts.
 
 ### 3. Data Table Architecture
-For the `OrderList`, I integrated **TanStack Table**. This "headless" UI approach allowed me to maintain full control over the styling (using Tailwind) while leveraging powerful features like multi-column sorting, global filtering, and pagination out of the box.
 
-### 4. Visual Excellence
-The UI follows a modern, "glassmorphism" inspired aesthetic with subtle borders, soft shadows, and a curated color palette. I used **Framer Motion** for staggered entrance animations and smooth transitions between states, ensuring the app feels "alive" and premium.
+For the `OrderList`, I integrated **TanStack Table** in a "headless" manner, meaning I only used its logic and state management capabilities without any pre-built UI components and also because I have used in other applications and familiar with it.
 
-## 🚧 Challenges & Solutions
+ This "headless" UI approach allowed me to maintain full control over the styling (using Tailwind) and custom column rendering while still leveraging features like multi-column sorting, global filtering, and pagination out of the box.
 
-- **Challenge**: Managing complex chart responsiveness in a grid layout.
-  - **Solution**: Used `ResponsiveContainer` from Recharts combined with container-based grid layouts to ensure charts never overflow or break the layout.
-- **Challenge**: Implementing a performant global search across the order list.
+### 4. Micro-Interactions & Animations
+
+I used **Framer Motion** for staggered entrance animations and smooth transitions between states.
+
+This enhances the user experience by providing visual feedback during data loading, filtering, and navigation, making the dashboard feel more dynamic and responsive.
+
+## Challenges & Solutions
+
+- **Challenge**: Managing complex chart responsiveness in a grid layout on Dashboard main area.
+  - **Solution**: Used `@container-queries` to adjust container-based grid layouts to ensure charts never overflow or break the layout.
+- **Challenge**: Implementing a performant search across the order list.
   - **Solution**: Leveraged TanStack Table's built-in filtering logic with `useMemo` to ensure search operations are fast and don't cause unnecessary re-renders.
+
 - **Challenge**: Dark Mode consistency across third-party libraries.
-  - **Solution**: Custom CSS variables were mapped to Tailwind's theme, and chart colors were dynamically adjusted based on the current theme state.
+  - **Solution**: Custom CSS variables were mapped to Tailwind's theme, and dark mode variants applied to Radix UI components using `@custom-variant dark (&:where([data-theme="dark"], .dark, .dark *, [data-theme="dark"] *))`.
 
-## 📈 Improvements Made
+## Improvements Made
 
-- **Skeleton Loaders**: Replaced basic "Loading..." text with polished skeleton screens that match the actual layout, reducing layout shift.
+- **Skeleton Loaders**: Replaced basic "Loading..." text with polished skeleton screens or loader spinners that match the actual layout, reducing layout shift.
 - **Custom Icon System**: Implemented a centralized SVG icon system for consistent branding and optimized loading.
 - **Modular Slices**: Organized Redux state into feature-based slices (`dashboardSlice`, `ordersSlice`, etc.) for better maintainability.
-- **Accessibility**: Used semantic HTML and Radix UI primitives to ensure the dashboard is accessible to all users.
+- **Accessibility**: Used semantic HTML like `aside`,`main`, etc. and Radix UI primitives to ensure the dashboard is accessible to all users.

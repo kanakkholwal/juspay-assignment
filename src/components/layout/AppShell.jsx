@@ -2,25 +2,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
-import {
-	PiBellDuotone,
-	PiBookOpenDuotone,
-	PiCaretDownBold,
-	PiCaretRightBold,
-	PiChartPieDuotone,
-	PiChatsDuotone,
-	PiClockCounterClockwiseDuotone,
-	PiFolderDuotone,
-	PiHouseDuotone,
-	PiIdentificationBadgeDuotone,
-	PiIdentificationCardDuotone,
-	PiListDuotone,
-	PiMoonDuotone,
-	PiNotebookDuotone,
-	PiSidebarSimpleDuotone,
-	PiSunDuotone,
-	PiUsersDuotone
-} from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux"; // Redux Hooks
 import { Outlet } from "react-router-dom";
 import logoImg from "../../assets/logo.png";
@@ -126,7 +107,7 @@ export default function AppShell() {
 								size="icon"
 								className="ml-auto -mr-3 md:hidden"
 							>
-								<PiSidebarSimpleDuotone />
+								<Icon name="sidebar" />
 							</Button>
 						</div>
 
@@ -137,33 +118,33 @@ export default function AppShell() {
 									<span className="cursor-pointer hover:text-foreground transition-colors">Recently</span>
 								</div>
 								<div className="space-y-0.5 relative">
-									<SidebarItem icon={PiListDuotone} label="Overview" />
-									<SidebarItem icon={PiFolderDuotone} label="Projects" />
+									<SidebarItem icon={<Icon name="list" />} label="Overview" />
+									<SidebarItem icon={<Icon name="folder" />} label="Projects" />
 								</div>
 							</div>
 							<div>
 								<div className="text-xs font-medium text-muted-foreground/70 px-3 mb-2">Dashboards</div>
 								<div className="space-y-0.5 relative">
-									<SidebarItem icon={PiChartPieDuotone} label="Default" active />
-									<SidebarItem icon={PiHouseDuotone} label="eCommerce" />
-									<SidebarItem icon={PiFolderDuotone} label="Projects" />
-									<SidebarItem icon={PiBookOpenDuotone} label="Online Courses" />
+									<SidebarItem icon={<Icon name="chart-pie" />} label="Default" active />
+									<SidebarItem icon={<Icon name="house" />} label="eCommerce" />
+									<SidebarItem icon={<Icon name="folder" />} label="Projects" />
+									<SidebarItem icon={<Icon name="book" />} label="Online Courses" />
 								</div>
 							</div>
 							<div>
 								<div className="text-xs font-medium text-muted-foreground/70 px-3 mb-2">Pages</div>
 								<div className="space-y-0.5 relative">
-									<CollapsibleSidebarItem icon={PiIdentificationBadgeDuotone} label="User Profile" defaultOpen={true}>
+									<CollapsibleSidebarItem icon={<Icon name="identity-badge" />} label="User Profile" defaultOpen={true}>
 										<SubMenuItem label="Overview" />
 										<SubMenuItem label="Projects" />
 										<SubMenuItem label="Campaigns" />
 										<SubMenuItem label="Documents" />
 										<SubMenuItem label="Followers" />
 									</CollapsibleSidebarItem>
-									<SidebarItem icon={PiIdentificationCardDuotone} label="Account" />
-									<SidebarItem icon={PiUsersDuotone} label="Corporate" />
-									<SidebarItem icon={PiNotebookDuotone} label="Blog" />
-									<SidebarItem icon={PiChatsDuotone} label="Social" />
+									<SidebarItem icon={<Icon name="identity-card" />} label="Account" />
+									<SidebarItem icon={<Icon name="users" />} label="Corporate" />
+									<SidebarItem icon={<Icon name="notebook" />} label="Blog" />
+									<SidebarItem icon={<Icon name="chats" />} label="Social" />
 								</div>
 							</div>
 						</div>
@@ -182,7 +163,7 @@ export default function AppShell() {
 								if (isMobile) dispatch(setRightPanelOpen(false));
 							}}
 						>
-							<PiSidebarSimpleDuotone />
+							<Icon name="sidebar" />
 						</Button>
 						<div className="flex items-center gap-2 text-muted-foreground">
 							<Icon name="star" className="size-4" />
@@ -203,13 +184,13 @@ export default function AppShell() {
 						</div>
 
 						<Button onClick={toggleTheme} variant="ghost" size="icon">
-							{resolvedTheme === "dark" ? <PiSunDuotone /> : <PiMoonDuotone />}
+							<Icon name={resolvedTheme === "dark" ? "sun" : "moon"} />
 						</Button>
 						<Button variant="ghost" size="icon">
-							<PiClockCounterClockwiseDuotone />
+							<Icon name="clock-ccw" />
 						</Button>
 						<Button variant="ghost" size="icon" className="relative">
-							<PiBellDuotone />
+							<Icon name="bell" />
 							{notifications.length > 0 && (
 								<span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-background ring-2 ring-background" />
 							)}
@@ -222,7 +203,7 @@ export default function AppShell() {
 							variant="ghost"
 							size="icon"
 						>
-							<PiSidebarSimpleDuotone />
+							<Icon name="sidebar" />
 						</Button>
 					</div>
 				</header>
@@ -239,7 +220,7 @@ export default function AppShell() {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.2 }}
-						className="fixed inset-0 z-40 bg-black/10 backdrop-blur-2xl md:hidden"
+						className="fixed inset-0 z-40 bg-black/5 backdrop-blur md:hidden"
 						onClick={() => {
 							dispatch(setRightPanelOpen(false));
 							dispatch(setLeftPanelOpen(false));
@@ -274,7 +255,7 @@ export default function AppShell() {
 									size="icon"
 									className="-ml-3 md:hidden"
 								>
-									<PiSidebarSimpleDuotone />
+									<Icon name="sidebar" />
 								</Button>
 								<h3 className="font-semibold text-sm">Notifications</h3>
 							</div>
@@ -322,7 +303,7 @@ export default function AppShell() {
 									</div>
 								) : (
 									<div className="relative space-y-0 px-3">
-										<div className="absolute left-[23px] top-2 bottom-2 w-px bg-border/60" />
+										<div className="absolute left-5.75 top-2 bottom-2 w-px bg-border/60" />
 										{activities?.map((item, i) => (
 											<div key={i} className="flex gap-3 items-start relative z-10 py-2">
 												<div className="size-6 rounded-full overflow-hidden shrink-0 ring-2 ring-background bg-secondary">
@@ -401,13 +382,13 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
 		{active && (
 			<div className="w-1 h-4 rounded-full bg-foreground absolute left-0" />
 		)}
-		<Icon />
+		{Icon}
 		<span>{label}</span>
 	</Button>
 );
 
 const CollapsibleSidebarItem = ({
-	icon: Icon,
+	icon: ItemIcon,
 	label,
 	active,
 	children,
@@ -431,9 +412,9 @@ const CollapsibleSidebarItem = ({
 				)}
 			>
 				<span className="opacity-70 group-hover:opacity-100 transition-opacity text-muted-foreground">
-					{isOpen ? <PiCaretDownBold className="size-3" /> : <PiCaretRightBold className="size-3" />}
+					{isOpen ? <Icon name="caret-down" className="size-3" /> : <Icon name="caret-right" className="size-3" />}
 				</span>
-				<Icon />
+				{ItemIcon}
 				<span>{label}</span>
 			</Button>
 

@@ -9,15 +9,6 @@ import {
 } from "@tanstack/react-table";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import {
-	PiArrowsDownUp,
-	PiCaretLeft,
-	PiCaretRight,
-	PiDotsThreeOutline,
-	PiFunnel,
-	PiPlus,
-	PiSpinner
-} from "react-icons/pi";
 import { fetchOrders } from "../api/orders";
 import { Icon } from "../components/icons";
 import { Button } from "../components/ui/button";
@@ -104,7 +95,7 @@ export default function OrderList() {
 			id: "actions",
 			cell: () => (
 				<button className="opacity-0 group-hover:opacity-100 inline-flex p-1 hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground">
-					<PiDotsThreeOutline />
+					<Icon name="dots-three" />
 				</button>
 			),
 		}),
@@ -137,10 +128,10 @@ export default function OrderList() {
 			<div className="flex flex-wrap justify-between items-start sm:items-center gap-4 bg-card p-2 rounded-lg border border-border/40 @container/toolbar">
 				<div className="flex items-center gap-2">
 					<Button variant="ghost" size="icon_sm">
-						<PiPlus />
+						<Icon name="plus" />
 					</Button>
 					<Button variant="ghost" size="icon_sm">
-						<PiFunnel />
+						<Icon name="funnel" />
 					</Button>
 					<Button
 						variant={sorting.length > 0 ? "default_soft" : "ghost"}
@@ -148,7 +139,7 @@ export default function OrderList() {
 						onClick={() => setSorting([])}
 						title="Clear Sort"
 					>
-						<PiArrowsDownUp />
+						<Icon name="arrows-down-up" />
 					</Button>
 				</div>
 				<div className="relative flex items-center w-full @sm/toolbar:w-auto">
@@ -160,12 +151,12 @@ export default function OrderList() {
 						placeholder="Search orders..."
 						className="bg-background border border-border rounded-md px-3 py-1.5 pl-9 text-sm w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-accent transition-all placeholder:text-muted-foreground/50"
 					/>
-					{isLoading && <PiSpinner className="absolute right-3 animate-spin text-muted-foreground" />}
+					{isLoading && <Icon name="spinner" className="absolute right-3 animate-spin text-muted-foreground" />}
 				</div>
 			</div>
 
 
-			<div className="relative rounded-x overflow-hidden min-h-[400px]">
+			<div className="relative rounded-x overflow-hidden min-h-100">
 
 				{isLoading ? (
 					<TableSkeleton />
@@ -187,8 +178,8 @@ export default function OrderList() {
 												<div className="flex items-center gap-1">
 													{flexRender(header.column.columnDef.header, header.getContext())}
 													{{
-														asc: <PiArrowsDownUp className="w-3 h-3 rotate-180" />,
-														desc: <PiArrowsDownUp className="w-3 h-3" />,
+														asc: <Icon name="arrows-down-up" className="size-3 rotate-180" />,
+														desc: <Icon name="arrows-down-up" className="size-3" />,
 													}[header.column.getIsSorted()] ?? null}
 												</div>
 											</th>
@@ -252,7 +243,7 @@ export default function OrderList() {
 						onClick={() => table.previousPage()}
 						disabled={!table.getCanPreviousPage()}
 					>
-						<PiCaretLeft />
+						<Icon name="caret-left" />
 					</Button>
 					<div className="flex items-center gap-1">
 						{Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
@@ -278,7 +269,7 @@ export default function OrderList() {
 						size="icon_sm" onClick={() => table.nextPage()}
 						disabled={!table.getCanNextPage()}
 					>
-						<PiCaretRight className="w-4 h-4" />
+						<Icon name="caret-right" className="size-4" />
 					</Button>
 				</div>
 			</div>
