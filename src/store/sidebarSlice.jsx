@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchSidebarData } from '../api/sidebar'; // Import your fake API
+import { fetchSidebarData } from '../api/sidebar';
 
 // Async Thunk to fetch data
 export const getSidebarData = createAsyncThunk(
