@@ -1,4 +1,5 @@
 
+// from figma design
 export const WorldMapAltIcon = (props) => (
     <svg
         width={163}

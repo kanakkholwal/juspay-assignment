@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { PiSidebarDuotone } from "react-icons/pi";
 import { cn } from "../lib/utils";
 
+// from personal repo: github.com/kanakkholwal/kanakkholwal
 import {
 	PiArrowClockwiseDuotone,
 	PiArrowCounterClockwiseDuotone,
@@ -13,15 +14,17 @@ import {
 	PiArticleDuotone,
 	PiBookOpenDuotone,
 	PiBookmarkSimpleDuotone,
+	PiBroadcastDuotone,
 	PiBrowserDuotone,
+	PiBugBeetleDuotone,
 	PiCalendarBlankDuotone,
 	PiCameraDuotone,
 	PiChartBarDuotone,
 	PiChartLineUpDuotone,
-	PiCheckBold, // Best fit for candlestick
-	PiCheckCircleDuotone, // Best fit for copy-check
-	PiCircleDuotone, // Fit for Dot/Circle
-	PiCircleNotchDuotone, // Fit for loader
+	PiCheckBold,
+	PiCheckCircleDuotone,
+	PiCircleDuotone,
+	PiCircleNotchDuotone,
 	PiClipboardTextDuotone,
 	PiClockAfternoonDuotone,
 	PiCodeDuotone,
@@ -77,13 +80,14 @@ import {
 	PiTrashDuotone,
 	PiTrendUpDuotone,
 	PiTwitterLogoDuotone,
+	PiUserPlusDuotone,
 	PiUserSoundDuotone,
 	PiUsersDuotone,
 	PiWarningCircleDuotone,
 	PiWaveTriangleDuotone,
 	PiXDuotone,
 	PiXLogoDuotone, // For New Twitter (X)
-	PiYoutubeLogoDuotone,
+	PiYoutubeLogoDuotone
 } from "react-icons/pi";
 
 export const IconComponent = {
@@ -130,6 +134,10 @@ export const IconComponent = {
 	list: PiListDuotone,
 	sidebar: PiSidebarDuotone,
 	star: PiStarDuotone,
+	bug: PiBugBeetleDuotone,
+	circle: PiCircleNotchDuotone,
+	"user-add": PiUserPlusDuotone,
+	broadcast: PiBroadcastDuotone,
 	// --- Content & Media ---
 	articles: PiArticleDuotone,
 	experiences: PiScrollDuotone, // Represents history/scroll
@@ -154,7 +162,7 @@ export const IconComponent = {
 	plus: PiPlusDuotone,
 	rocket: PiRocketLaunchDuotone,
 	plus_circle: PiPlusCircleDuotone,
-	"copy-check": PiClipboardTextDuotone, // Closer metaphor for "copied text"
+	"clipboard": PiClipboardTextDuotone, // Closer metaphor for "copied text"
 	send: PiPaperPlaneRightDuotone,
 	bookmark: PiBookmarkSimpleDuotone,
 	"bookmark-check": PiCheckCircleDuotone,

@@ -4,6 +4,7 @@ import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 
 const IS_SERVER = typeof window === "undefined";
 
+// from personal repo: github.com/kanakkholwal/kanakkholwal
 export function useMediaQuery(
 	query,
 	{ defaultValue = false, initializeWithValue = true },

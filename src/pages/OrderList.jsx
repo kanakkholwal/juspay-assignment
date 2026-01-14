@@ -2,163 +2,139 @@ import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
+	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import {
 	PiArrowsDownUp,
+	PiCaretLeft,
+	PiCaretRight,
 	PiDotsThreeOutline,
 	PiFunnel,
 	PiPlus,
+	PiSpinner
 } from "react-icons/pi";
+import { fetchOrders } from "../api/orders";
+import { Icon } from "../components/icons";
 import { Button } from "../components/ui/button";
-// Mock Data
-const ORDERS_DATA = [
-	{
-		id: "#CM9801",
-		user: { name: "Natali Craig", avatar: "https://i.pravatar.cc/150?u=1" },
-		project: "Landing Page",
-		address: "Meadow Lane Oakland",
-		date: "Just now",
-		status: "In Progress",
-	},
-	{
-		id: "#CM9802",
-		user: { name: "Kate Morrison", avatar: "https://i.pravatar.cc/150?u=2" },
-		project: "CRM Admin pages",
-		address: "Larry San Francisco",
-		date: "A minute ago",
-		status: "Complete",
-	},
-	{
-		id: "#CM9803",
-		user: { name: "Drew Cano", avatar: "https://i.pravatar.cc/150?u=3" },
-		project: "Client Project",
-		address: "Bagwell Avenue Ocala",
-		date: "1 hour ago",
-		status: "Pending",
-	},
-	{
-		id: "#CM9804",
-		user: { name: "Orlando Diggs", avatar: "https://i.pravatar.cc/150?u=4" },
-		project: "Admin Dashboard",
-		address: "Washburn Baton Rouge",
-		date: "Yesterday",
-		status: "Approved",
-	},
-	{
-		id: "#CM9805",
-		user: { name: "Andi Lane", avatar: "https://i.pravatar.cc/150?u=5" },
-		project: "App Landing Page",
-		address: "Nest Lane Olivette",
-		date: "Feb 2, 2023",
-		status: "Rejected",
-	},
-];
+import { Checkbox } from "../components/ui/checkbox";
+import { cn } from "../lib/utils";
+
+
 
 const columnHelper = createColumnHelper();
 
-const columns = [
-	columnHelper.accessor("id", {
-		header: "Order ID",
-		cell: (info) => (
-			<span className="text-muted-foreground">{info.getValue()}</span>
-		),
-	}),
-	columnHelper.accessor("user", {
-		header: "User",
-		cell: (info) => (
-			<div className="flex items-center gap-2 whitespace-nowrap">
-				<img
-					src={info.getValue().avatar}
-					className="w-6 h-6 rounded-full"
-					alt="avatar"
-				/>
-				<span className="font-medium">{info.getValue().name}</span>
-			</div>
-		),
-	}),
-	columnHelper.accessor("project", {
-		header: "Project",
-		cell: (info) => (
-			<span className="text-muted-foreground whitespace-nowrap">
-				{info.getValue()}
-			</span>
-		),
-	}),
-	columnHelper.accessor("address", {
-		header: "Address",
-		cell: (info) => (
-			<span className="text-muted-foreground whitespace-nowrap">
-				{info.getValue()}
-			</span>
-		),
-	}),
-	columnHelper.accessor("date", {
-		header: "Date",
-		cell: (info) => (
-			<div className="flex items-center gap-1 whitespace-nowrap">
-				<i className="pi pi-calendar"></i> {/* Add calendar icon if needed */}
-				{info.getValue()}
-			</div>
-		),
-	}),
-	columnHelper.accessor("status", {
-		header: "Status",
-		cell: (info) => {
-			const status = info.getValue();
-			let color = "bg-gray-400";
-			if (status === "In Progress") color = "bg-blue-500";
-			if (status === "Complete") color = "bg-emerald-500";
-			if (status === "Pending") color = "bg-blue-300";
-			if (status === "Approved") color = "bg-amber-400";
-			if (status === "Rejected") color = "bg-gray-400";
-
-			return (
-				<div className="flex items-center gap-2 text-xs whitespace-nowrap">
-					<span className={`w-1.5 h-1.5 rounded-full ${color}`} />
-					<span
-						className={
-							status === "In Progress"
-								? "text-blue-500"
-								: status === "Complete"
-									? "text-emerald-500"
-									: "text-muted-foreground"
-						}
-					>
-						{status}
-					</span>
-				</div>
-			);
-		},
-	}),
-	columnHelper.display({
-		id: "actions",
-		cell: () => (
-			<button className="hidden group-hover:inline-flex p-1 hover:bg-secondary rounded">
-				<PiDotsThreeOutline />
-			</button>
-		),
-	}),
-];
-
 export default function OrderList() {
-	const [data] = useState(ORDERS_DATA);
+	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [globalFilter, setGlobalFilter] = useState("");
+	const [sorting, setSorting] = useState([]);
+
+
+	useEffect(() => {
+		const loadData = async () => {
+			setIsLoading(true);
+			const result = await fetchOrders();
+			setData(result);
+			setIsLoading(false);
+		};
+		loadData();
+	}, []);
+
+	// to prevent rerenders
+	const columns = useMemo(() => [
+		columnHelper.accessor("id", {
+			header: "Order ID",
+			cell: (info) => <span className="text-muted-foreground">{info.getValue()}</span>,
+		}),
+		columnHelper.accessor("user", {
+			header: "User",
+			cell: (info) => (
+				<div className="flex items-center gap-2 whitespace-nowrap">
+					<img src={info.getValue().avatar} className="w-6 h-6 rounded-full bg-secondary" alt="avatar" />
+					<span className="font-medium">{info.getValue().name}</span>
+				</div>
+			),
+		}),
+		columnHelper.accessor("project", {
+			header: "Project",
+			cell: (info) => <span className="text-muted-foreground whitespace-nowrap">{info.getValue()}</span>,
+		}),
+		columnHelper.accessor("address", {
+			header: "Address",
+			cell: (info) => <span className="text-muted-foreground whitespace-nowrap inline-flex items-center gap-2">
+				{info.getValue()}
+				<Icon name="clipboard" className="size-4 opacity-0 group-hover:opacity-100 cursor-pointer" />
+			</span>,
+		}),
+		columnHelper.accessor("date", {
+			header: "Date",
+			cell: (info) => (
+				<div className="flex items-center gap-1 whitespace-nowrap text-muted-foreground">
+					<Icon name="calendar" className="size-4" />
+					{info.getValue()}
+				</div>
+			),
+		}),
+		columnHelper.accessor("status", {
+			header: "Status",
+			cell: (info) => {
+				const status = info.getValue();
+				let color = "bg-gray-400";
+				let textColor = "text-muted-foreground";
+
+				if (status === "In Progress") { color = "bg-blue-500"; textColor = "text-blue-500"; }
+				if (status === "Complete") { color = "bg-emerald-500"; textColor = "text-emerald-500"; }
+				if (status === "Pending") { color = "bg-blue-300"; textColor = "text-blue-400"; }
+				if (status === "Approved") { color = "bg-amber-400"; textColor = "text-amber-500"; }
+
+				return (
+					<div className="flex items-center gap-2 text-xs whitespace-nowrap">
+						<span className={cn('w-1.5 h-1.5 rounded-full', color)} />
+						<span className={textColor}>{status}</span>
+					</div>
+				);
+			},
+		}),
+		columnHelper.display({
+			id: "actions",
+			cell: () => (
+				<button className="opacity-0 group-hover:opacity-100 inline-flex p-1 hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground">
+					<PiDotsThreeOutline />
+				</button>
+			),
+		}),
+	], []);
+
 	const table = useReactTable({
 		data,
 		columns,
+		state: {
+			globalFilter,
+			sorting,
+		},
+		onGlobalFilterChange: setGlobalFilter,
+		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
+		initialState: {
+			pagination: {
+				pageSize: 8,
+			},
+		},
 	});
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 h-full flex flex-col">
 			<h2 className="text-lg font-semibold mb-4">Order List</h2>
 
-			<div className="flex justify-between items-center bg-primary-light p-2 rounded-lg mb-4">
+			<div className="flex flex-wrap justify-between items-start sm:items-center gap-4 bg-card p-2 rounded-lg border border-border/40 @container/toolbar">
 				<div className="flex items-center gap-2">
 					<Button variant="ghost" size="icon_sm">
 						<PiPlus />
@@ -166,85 +142,164 @@ export default function OrderList() {
 					<Button variant="ghost" size="icon_sm">
 						<PiFunnel />
 					</Button>
-					<Button variant="ghost" size="icon_sm">
+					<Button
+						variant={sorting.length > 0 ? "default_soft" : "ghost"}
+						size="icon_sm"
+						onClick={() => setSorting([])}
+						title="Clear Sort"
+					>
 						<PiArrowsDownUp />
 					</Button>
 				</div>
-				<div className="relative">
+				<div className="relative flex items-center w-full @sm/toolbar:w-auto">
+					<Icon name="search" className="absolute my-auto left-2.5 size-4 text-muted-foreground pointer-events-none" />
 					<input
-						type="text"
-						placeholder="Search"
-						className="bg-background border border-border rounded-md px-3 py-1.5 text-sm w-64 focus:outline-none focus:ring-1 focus:ring-accent"
+						type="search"
+						value={globalFilter ?? ""}
+						onChange={(e) => setGlobalFilter(e.target.value)}
+						placeholder="Search orders..."
+						className="bg-background border border-border rounded-md px-3 py-1.5 pl-9 text-sm w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-accent transition-all placeholder:text-muted-foreground/50"
 					/>
+					{isLoading && <PiSpinner className="absolute right-3 animate-spin text-muted-foreground" />}
 				</div>
 			</div>
 
-			{/* Table */}
-			<div className="overflow-auto rounded-lg border border-border/50">
-				<table className="w-full text-sm text-left">
-					<thead className="bg-secondary/30 text-muted-foreground text-xs uppercase font-medium">
-						{table.getHeaderGroups().map((headerGroup) => (
-							<tr key={headerGroup.id}>
-								<th className="px-4 py-3 w-8">
-									<input
-										type="checkbox"
-										className="rounded border-gray-600 bg-transparent"
-									/>
-								</th>
-								{headerGroup.headers.map((header) => (
-									<th key={header.id} className="px-4 py-3 font-medium">
-										{flexRender(
-											header.column.columnDef.header,
-											header.getContext(),
-										)}
-									</th>
+
+			<div className="relative rounded-x overflow-hidden min-h-[400px]">
+
+				{isLoading ? (
+					<TableSkeleton />
+				) : (
+					<div className="overflow-x-auto">
+						<table className="w-full text-sm text-left">
+							<thead className="text-muted-foreground text-xs uppercase font-medium border-b border-border/50">
+								{table.getHeaderGroups().map((headerGroup) => (
+									<tr key={headerGroup.id}>
+										<th className="px-4 py-3 w-8">
+											<Checkbox />
+										</th>
+										{headerGroup.headers.map((header) => (
+											<th
+												key={header.id}
+												className="px-4 py-3 font-medium cursor-pointer select-none hover:text-foreground transition-colors group"
+												onClick={header.column.getToggleSortingHandler()}
+											>
+												<div className="flex items-center gap-1">
+													{flexRender(header.column.columnDef.header, header.getContext())}
+													{{
+														asc: <PiArrowsDownUp className="w-3 h-3 rotate-180" />,
+														desc: <PiArrowsDownUp className="w-3 h-3" />,
+													}[header.column.getIsSorted()] ?? null}
+												</div>
+											</th>
+										))}
+									</tr>
 								))}
-							</tr>
-						))}
-					</thead>
-					<tbody className="divide-y divide-border/30 bg-background">
-						{table.getRowModel().rows.map((row) => (
-							<tr
-								key={row.id}
-								className="group hover:bg-secondary/20 transition-colors"
-							>
-								<td className="px-4 py-3">
-									<input
-										type="checkbox"
-										className="rounded border-gray-600 bg-transparent"
-									/>
-								</td>
-								{row.getVisibleCells().map((cell) => (
-									<td key={cell.id} className="px-4 py-3">
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</td>
-								))}
-							</tr>
-						))}
-					</tbody>
-				</table>
+							</thead>
+							<tbody className="divide-y divide-border/30">
+
+								<AnimatePresence>
+
+									{table.getRowModel().rows.length > 0 ? (
+										table.getRowModel().rows.map((row, i) => (
+											<motion.tr
+												key={row.id}
+												initial={{ opacity: 0, y: 10 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{ duration: 0.2, delay: i * 0.05 }}
+												className="group hover:bg-primary-light transition-colors"
+											>
+												<td className="px-4 py-3">
+													<Checkbox className="data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+												</td>
+												{row.getVisibleCells().map((cell) => (
+													<td key={cell.id} className="px-4 py-3">
+														{flexRender(cell.column.columnDef.cell, cell.getContext())}
+													</td>
+												))}
+											</motion.tr>
+										))
+									) : (
+										<motion.tr
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+										>
+											<td colSpan={columns.length + 1} className="h-64 text-center text-muted-foreground">
+												<div className="flex flex-col items-center justify-center gap-2">
+													<Icon name="search" className="size-8 opacity-20" />
+													<p>No results found for "{globalFilter}"</p>
+													<Button variant="link" onClick={() => setGlobalFilter("")} className="text-primary h-auto p-0">
+														Clear search
+													</Button>
+												</div>
+											</td>
+										</motion.tr>
+									)}
+								</AnimatePresence>
+
+							</tbody>
+						</table>
+					</div>
+				)}
 			</div>
 
-			{/* Pagination Footer */}
-			<div className="flex justify-end gap-2 mt-4 text-sm">
-				<button
-					className="px-3 py-1 rounded hover:bg-secondary disabled:opacity-50"
-					onClick={() => table.previousPage()}
-					disabled={!table.getCanPreviousPage()}
-				>
-					Previous
-				</button>
-				<button className="px-3 py-1 bg-secondary rounded text-foreground">
-					1
-				</button>
-				<button
-					className="px-3 py-1 rounded hover:bg-secondary disabled:opacity-50"
-					onClick={() => table.nextPage()}
-					disabled={!table.getCanNextPage()}
-				>
-					Next
-				</button>
+			<div className="flex items-center justify-end px-2">
+
+				<div className="flex gap-2">
+					<Button
+						variant="ghost"
+						size="icon_sm"
+						onClick={() => table.previousPage()}
+						disabled={!table.getCanPreviousPage()}
+					>
+						<PiCaretLeft />
+					</Button>
+					<div className="flex items-center gap-1">
+						{Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
+							return (
+								<Button
+									key={i + 1}
+									onClick={() => table.setPageIndex(i)}
+									variant="ghost"
+									size="icon_sm"
+									className={cn(
+										table.getState().pagination.pageIndex === i
+											? "bg-secondary text-foreground font-medium"
+											: "text-muted-foreground hover:bg-secondary/50"
+									)}
+								>
+									{i + 1}
+								</Button>
+							)
+						})}
+					</div>
+					<Button
+						variant="ghost"
+						size="icon_sm" onClick={() => table.nextPage()}
+						disabled={!table.getCanNextPage()}
+					>
+						<PiCaretRight className="w-4 h-4" />
+					</Button>
+				</div>
 			</div>
-		</div>
+		</div >
 	);
 }
+
+
+
+const TableSkeleton = () => (
+	<div className="animate-pulse space-y-4">
+		{[...Array(5)].map((_, i) => (
+			<div key={i} className="flex items-center space-x-4 p-4 border-b border-border/40">
+				<div className="h-4 w-4 bg-secondary rounded"></div>
+				<div className="h-4 w-20 bg-secondary rounded"></div>
+				<div className="h-8 w-8 bg-secondary rounded-full"></div>
+				<div className="h-4 w-32 bg-secondary rounded"></div>
+				<div className="h-4 w-24 bg-secondary rounded"></div>
+				<div className="h-4 w-24 bg-secondary rounded"></div>
+				<div className="h-4 w-16 bg-secondary rounded"></div>
+			</div>
+		))}
+	</div>
+);
